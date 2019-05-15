@@ -18,17 +18,17 @@ var autoprefixerList = [
 ];
 // path to src/build, files who need whaching and folder who need clean.
 var path = {
-    build: {
-        js:    'assets/resultFiles/js/',
-        css:   'assets/resultFiles/css/',
-        img:   'assets/resultFiles/img/'
-    },
-    src: {
-        js:    'assets/yourFiles/js/*.*',
-        style: 'assets/yourFiles/css/*.*',
-        img:   'assets/yourFiles/imgs/*.*'
-    },
-    clean:     './assets/resultFiles/*'
+        build: {
+            js:    'assets/resultFiles/js/',
+            css:   'assets/resultFiles/css/',
+            img:   'assets/resultFiles/img/'
+        },
+        src: {
+            js:    'assets/yourFiles/js/*.*',
+            style: 'assets/yourFiles/css_sass/*.*',
+            img:   'assets/yourFiles/imgs/*.*'
+        },
+        clean:     './assets/resultFiles/*'
 };
 
 
@@ -41,7 +41,6 @@ var path = {
 const { src, dest, parallel, series, watch } = require('gulp');
 const plumber = require('gulp-plumber'), // for errors
       rigger = require('gulp-rigger'), // import info from files to other files
-      sourcemaps = require('gulp-sourcemaps'), // sourcemaps for css and js
       sass = require('gulp-sass'), // SCSS to CSS
       autoprefixer = require('gulp-autoprefixer'),
       cleanCSS = require('gulp-clean-css'), // minimize CSS
@@ -60,26 +59,20 @@ const plumber = require('gulp-plumber'), // for errors
 function cssBuild(cb){
 	return src(path.src.style)
 		     .pipe(plumber())
-         .pipe(sourcemaps.init())
          .pipe(sass())
          .pipe(autoprefixer({
             browsers: autoprefixerList
          }))
          .pipe(cleanCSS())
-         .pipe(sourcemaps.write('./'))
          .pipe(dest(path.build.css))
-         .pipe(webserver.reload({stream: true}));
 }
 
 function jsBuild(cb){
 	return src(path.src.js)
 		     .pipe(plumber())
          .pipe(rigger())
-         .pipe(sourcemaps.init())
          .pipe(uglify())
-         .pipe(sourcemaps.write('./'))
          .pipe(dest(path.build.js))
-         .pipe(webserver.reload({stream: true}));
 }
 
 function imageBuild(cb){
@@ -99,11 +92,6 @@ function imageBuild(cb){
 
 function cleanBuild(cb){
 	del.sync(path.clean);
-	cb();
-}
-
-function cacheClear(cb){
-	cache.clearAll();
 	cb();
 }
 
