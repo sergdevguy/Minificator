@@ -122,6 +122,7 @@ function build(cb){
 
 // autostart tasks on "gulp" command in console
 exports.default = series(
+  removeGitkeep,
 	cleanBuild,
 	build
 )
