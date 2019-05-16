@@ -1,6 +1,6 @@
 # Minificator  
 
-1) Minimize and concatinate:  SASS/CSS, JS.  
+1) Minimize and concatinate __SASS/CSS__, __JS__ into one .css and one .js files  
 2) Compress:  Jpeg, png  
 ___  
 ### How it`s work.
