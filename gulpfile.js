@@ -38,7 +38,7 @@ var path = {
 // _______________________________________________________
 
 // Add plugins
-const { src, dest, parallel, series, watch } = require('gulp');
+const { src, dest, series, watch } = require('gulp');
 const plumber = require('gulp-plumber'), // for errors
       rigger = require('gulp-rigger'), // import info from files to other files
       sass = require('gulp-sass'), // SCSS to CSS
@@ -49,7 +49,8 @@ const plumber = require('gulp-plumber'), // for errors
       imagemin = require('gulp-imagemin'), // for minimaze PNG, JPEG, GIF and SVG
       jpegrecompress = require('imagemin-jpeg-recompress'), // for minimaze jpeg	
       pngquant = require('imagemin-pngquant'), // for minimaze png
-      del = require('del'); // remove files and folders
+      del = require('del'), // remove files and folders
+      concat = require('gulp-concat');
 
 
 // _______________________________________________________
@@ -63,8 +64,11 @@ function cssBuild(cb){
          .pipe(autoprefixer({
             browsers: autoprefixerList
          }))
+         .pipe(rigger())
          .pipe(cleanCSS())
+         .pipe(concat('style.css'))
          .pipe(dest(path.build.css))
+         
 }
 
 function jsBuild(cb){
@@ -72,6 +76,7 @@ function jsBuild(cb){
 		     .pipe(plumber())
          .pipe(rigger())
          .pipe(uglify())
+         .pipe(concat('code.js'))
          .pipe(dest(path.build.js))
 }
 
@@ -95,6 +100,19 @@ function cleanBuild(cb){
 	cb();
 }
 
+function cacheClear(cb){
+	cache.clearAll();
+	cb();
+}
+
+function removeGitkeep(cb){
+  del.sync('./assets/resultFiles/.gitkeep');
+  del.sync('./assets/yourFiles/css_sass/.gitkeep');
+  del.sync('./assets/yourFiles/js/.gitkeep');
+  del.sync('./assets/yourFiles/imgs/.gitkeep');
+  cb();
+}
+
 function build(cb){
 	cssBuild();
 	jsBuild();
@@ -102,17 +120,8 @@ function build(cb){
 	cb();
 }
 
-// start tasks on files changes
-function watchChanges(cb){
-  watch(path.watch.css, cssBuild);
-  watch(path.watch.js, jsBuild);
-  watch(path.watch.img, imageBuild);
-	cb();
-}
-
 // autostart tasks on "gulp" command in console
 exports.default = series(
 	cleanBuild,
-	build,
-  watchChanges
+	build
 )
