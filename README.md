@@ -1,7 +1,7 @@
 # Minificator  
 
-Minimize and concatinate:  SASS/CSS, JS.
-Compress:  Jpeg, png  
+1) Minimize and concatinate:  SASS/CSS, JS.  
+2) Compress:  Jpeg, png  
 ___  
 ### How it`s work.
 1) Install packages - __"yarn(or npm) install"__.
